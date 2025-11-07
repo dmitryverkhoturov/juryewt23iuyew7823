@@ -1,24 +1,14 @@
-Тестовое задание MLE
-
-От заказчика была получена задача на разработку сервиса по обучению генеративной модели новым стилям с помощью LoRA адаптеров. Коллегой DS был написан код для решения этой задачи и передан дальше на ревью.
-
-Необходимо проверить код и составить небольшой отчет, в котором описать, что хорошо получилось в коде, что не очень, как можно улучшить и решает ли он задачу заказчика. А так же, предложить, что можно сделать с кодом дальше, чтобы заказчик не задумывался над чтением readme из репозитория для запуска обучения.
+Чтобы запустить генерацию базовой моделью до обучения:
+```bash
+python ./src/generate_base.py --prompt a big fat cat on sofa" --num-images 10
+```
 
 Чтобы запустить обучение:
 ```bash
-python ./src/lora_fit_and_save.py \
-  --train_data_dir ./acvarel_caption \
-  --output_folder ./outputs \
-  --resolution 512 \
-  --batch_size 2 \
-  --epochs 10
+python ./src/lora_fit_and_save.py --train_data_dir ./acvarel_caption --output_folder ./outputs --resolution 512 --batch_size 2 --epochs 10
 ```
 
-Чтобы запустить генерацию:
+Чтобы запустить генерацию после обучения:
 ```bash
-python ./src/generate_images.py \
-  --lora_path outputs \
-  --prompt "a big fat cat on sofa" \
-  --num_images 10
+python ./src/generate_images.py --lora_path outputs --prompt "a big fat cat on sofa" --num_images 10
 ```
-
