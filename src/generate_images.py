@@ -8,7 +8,7 @@ from utils import load_pipe, parse_args
 if __name__ == "__main__":
     args = parse_args()
 
-    pipe = load_pipe(args.lora_path)
+    pipe = load_pipe(args.lora_path, args.device)
 
     images: List[Image.Image] = []
     for _ in range(args.num_images):

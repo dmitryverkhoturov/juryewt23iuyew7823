@@ -45,6 +45,7 @@ def parse_args():
     p = argparse.ArgumentParser(description="Generate images with (optionally) LoRA adapter")
     p.add_argument("--prompt", type=str, required=True)
     p.add_argument("--lora_path", type=str, help="Path to folder with LoRA weights (peft model)")
+    p.add_argument("--device", type=str, default=None)
     p.add_argument("--num_images", type=int, default=4)
     p.add_argument("--output_dir", type=str, default="outputs/gen")
     return p.parse_args()
