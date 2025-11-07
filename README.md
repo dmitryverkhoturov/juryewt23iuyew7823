@@ -17,7 +17,7 @@ python ./src/lora_fit_and_save.py \
 Чтобы запустить генерацию:
 ```bash
 python ./src/generate_images.py \
-  --lora_path outputs/my_style \
+  --lora_path outputs \
   --prompt "a big fat cat on sofa" \
   --num_images 10
 ```
