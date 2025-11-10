@@ -25,7 +25,7 @@ def load_pipe(
         base_model = "runwayml/stable-diffusion-v1-5"):
     logger.info("start load pipeline")
     base_model = "runwayml/stable-diffusion-v1-5"
-    device = device or ("cuda" if torch.cuda.is_available() else "cpu"))
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     dtype = torch.float16 if device == "cuda" else torch.float32
 
     pipe = StableDiffusionPipeline.from_pretrained(base_model, torch_dtype=dtype)
