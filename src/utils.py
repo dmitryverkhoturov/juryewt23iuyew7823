@@ -25,7 +25,7 @@ def load_pipe(
         base_model = "runwayml/stable-diffusion-v1-5"):
     logger.info("start load pipeline")
     base_model = "runwayml/stable-diffusion-v1-5"
-    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu"))
     dtype = torch.float16 if device == "cuda" else torch.float32
 
     pipe = StableDiffusionPipeline.from_pretrained(base_model, torch_dtype=dtype)
@@ -34,18 +34,20 @@ def load_pipe(
 
     if lora_path:
         logger.info(f"Loading LoRA from: {lora_path}")
-        config = PeftConfig.from_pretrained(lora_path)
-        pipe.unet = PeftModel.from_pretrained(pipe.unet, lora_path, config=config)
+        cfg = PeftConfig.from_pretrained(lora_path)
+        pipe.unet = PeftModel.from_pretrained(pipe.unet, lora_path, config=cfg)
         pipe.unet.eval()
-        # ✅ ensure adapter is active and not silently ignored
+
+        # ✅ Sanity: confirm adapter tensors exist
+        has_lora = any("lora_" in n for n, _ in pipe.unet.named_parameters())
+        logger.info(f"LoRA params found: {has_lora}")
+
+        # ✅ Force-apply LoRA by merging into the base UNet (bakes it in)
         try:
-            active = getattr(pipe.unet, "active_adapter", None) or "default"
-            pipe.unet.set_adapter(active, lora_scale=1.5)  # bump to 1.2–1.5 if still too weak
-            # quick sanity log: check a known LoRA key exists
-            has_lora = any("lora_" in k for k in dict(pipe.unet.named_parameters()))
-            logger.info(f"LoRA active='{active}', scale=1.0, params_with_lora={has_lora}")
+            pipe.unet = pipe.unet.merge_and_unload()
+            logger.info("LoRA merged into UNet (inference will definitely use it).")
         except Exception as e:
-            logger.warning(f"Could not set adapter scale (non-fatal): {e}")
+            logger.warning(f"merge_and_unload failed (will still run with PEFT): {e}")
 
     logger.warning("load pipeline done")
     return pipe
