@@ -60,11 +60,11 @@ if __name__ == "__main__":
 
     print("Конфиг модели")
     lora_config = LoraConfig(
-        r=8,
-        lora_alpha=2,
+        r=128,
+        lora_alpha=128,
         bias="none",
-        target_modules=["to_k", "to_q", "to_v"],
-        lora_dropout=0.15,
+        target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+        lora_dropout=0.05,
     )
     unet = get_peft_model(pipe.unet, lora_config)
     unet.train()
