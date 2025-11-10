@@ -19,17 +19,17 @@ if __name__ == "__main__":
     out_base.mkdir(parents=True, exist_ok=True)
     out_lora.mkdir(parents=True, exist_ok=True)
 
-    seeds = make_seed_list(args.num_images, getattr(args, "seed", None))
+    seeds = make_seed_list(args.num_images, args.seed)
 
-    # BASE (optional, for comparison)
-    if getattr(args, "compare_base", False):
+    # BASE first (only if --compare_base)
+    if args.compare_base:
         base_pipe = load_pipe(lora_path=None, device=args.device)
         for s in seeds:
             g = torch.Generator(device=base_pipe.device).manual_seed(s)
             img: Image.Image = base_pipe(args.prompt, num_inference_steps=35, generator=g).images[0]
             img.save(out_base / f"{s}.png")
 
-    # LoRA
+    # Then LoRA with the same seeds
     pipe = load_pipe(args.lora_path, args.device)
     for s in seeds:
         g = torch.Generator(device=pipe.device).manual_seed(s)

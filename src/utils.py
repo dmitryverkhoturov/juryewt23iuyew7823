@@ -58,4 +58,6 @@ def parse_args():
     p.add_argument("--device", type=str, default=None)
     p.add_argument("--num_images", type=int, default=4)
     p.add_argument("--output_dir", type=str, default="outputs/gen")
+    p.add_argument("--compare_base", action="store_true", help="Also generate base images with the same seeds for A/B comparison.")
+    p.add_argument("--seed", type=int, default=None, help="Master RNG seed; if omitted, seeds are random.")
     return p.parse_args()
